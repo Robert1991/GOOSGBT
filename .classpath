@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="C:/Users/Robert/Java/workspace/GOOSGBT/lib/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Robert/Java/workspace/GOOSGBT/lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/windowlicker-core-DEV.jar"/>
+	<classpathentry kind="lib" path="lib/windowlicker-swing-DEV.jar"/>
+	<classpathentry kind="lib" path="lib/windowlicker-web-DEV.jar"/>
+	<classpathentry kind="lib" path="lib/xpp3-1.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/kxml2.jar"/>
+	<classpathentry kind="lib" path="lib/smack.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
