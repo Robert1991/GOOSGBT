@@ -6,12 +6,14 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
 public class FakeAuctionServer {
-	private final SingleMessageListener messageListener = new SingleMessageListener();
-	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
-	public static final String AUCTION_RESOURCE = "Auction";
-	public static final String XMPP_HOSTNAME = "localhost";
 	private static final String AUCTION_PASSWORD = "auction";
+	
+	public static final String AUCTION_RESOURCE = "Auction";
+	public static final String ITEM_ID_AS_LOGIN = "auction-%s";
+	public static final String AUCTION_ID_FORMAT = ITEM_ID_AS_LOGIN + "@%s/" + AUCTION_RESOURCE;
+	public static final String XMPP_HOSTNAME = "127.0.0.1";
 
+	private final SingleMessageListener messageListener = new SingleMessageListener();
 	private final String itemId;
 	private final XMPPConnection connection;
 	private Chat currentChat;
