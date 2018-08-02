@@ -15,6 +15,8 @@
 	</path>
 
 	<path id="classpath.test">
+		<pathelement location="lib/jmock-junit4-2.6.0.jar"/>
+		<pathelement location="lib/jmock-2.6.0.jar"/>
 		<pathelement location="lib/windowlicker-core-DEV.jar"/>
 		<pathelement location="lib/windowlicker-swing-DEV.jar"/>
 		<pathelement location="lib/kxml2.jar"/>

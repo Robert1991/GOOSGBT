@@ -4,6 +4,6 @@ public interface AuctionEventListener {
 
 	void auctionClosed();
 
-	void currentPrice(int i, int j);
+	void currentPrice(int price, int increment);
 
 }

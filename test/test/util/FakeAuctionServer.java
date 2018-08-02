@@ -35,7 +35,7 @@ public class FakeAuctionServer {
 			@Override
 			public void chatCreated(Chat chat, boolean createdLocally) {
 				currentChat = chat;
-				chat.addMessageListener(messageListener);
+				currentChat.addMessageListener(messageListener);
 			}
 		});
 	}
@@ -45,11 +45,10 @@ public class FakeAuctionServer {
 				equalTo(Main.JOIN_COMMAND_FORMAT));
 	}
 	
-	public void reportPrice(int price, int increment, String bidder) throws XMPPException {
+	public void reportPrice(int price, int increment, String bidder) throws XMPPException {		
 		currentChat.sendMessage(
-				String.format("SOLVersion: 1.1; Event PRICE; " +
+				String.format("SOLVersion: 1.1; Event: PRICE; " +
 		"CurrentPrice: %d; Increment: %d; Bidder: %s;", price, increment, bidder));
-		
 	}
 
 	public void hasReceivedBid(int bid, String sniperId) throws InterruptedException {

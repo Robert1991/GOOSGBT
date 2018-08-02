@@ -8,8 +8,11 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import prod.application.ui.MainWindow;
+import prod.auction.Auction;
+import prod.auctionsniper.AuctionSniper;
+import prod.auctionsniper.SniperListener;
 
-public class Main implements AuctionEventListener {
+public class Main implements SniperListener {
 	@SuppressWarnings("unused") private Chat notToBeGarbageCollected;
 	private static final int ARG_HOSTNAME = 0;
 	private static final int ARG_USERNAME = 1;
@@ -29,7 +32,6 @@ public class Main implements AuctionEventListener {
 		startUserInterface();
 	}
 	
-
 	public static void main(String... args) throws Exception {
 		Main main = new Main();
 		main.joinAuction(connection(args), args[ARG_ITEM_ID]);
@@ -37,10 +39,22 @@ public class Main implements AuctionEventListener {
 	
 	private void joinAuction(XMPPConnection connection, String itemId) throws Exception {
 		disconnectWhenUICloses(connection);
-		;
 		
 		Chat chat = connection.getChatManager().createChat(
-				auctionId(itemId, connection), new AuctionMessageTranslator(this));
+				auctionId(itemId, connection), 
+				null);
+		
+		Auction auction = new Auction() {
+			@Override
+			public void bid(int amount) {
+				try {
+					chat.sendMessage(String.format(BID_COMMAND_FORMAT, amount));
+				}catch(XMPPException e){
+					e.printStackTrace();
+				}
+			}
+		};
+		chat.addMessageListener(new AuctionMessageTranslator(new AuctionSniper(this, auction)));
 		this.notToBeGarbageCollected = chat;
 		chat.sendMessage(JOIN_COMMAND_FORMAT);
 	}
@@ -52,7 +66,6 @@ public class Main implements AuctionEventListener {
 			}
 		});
 	}
-
 
 	private static XMPPConnection connection(String... args) throws XMPPException {
 		XMPPConnection connection = connectTo(args[ARG_HOSTNAME],
@@ -81,20 +94,21 @@ public class Main implements AuctionEventListener {
 				connection.getServiceName());
 	}
 
-
 	@Override
-	public void auctionClosed() {
+	public void sniperLost() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				ui.showStatus(MainWindow.STATUS_LOST);;
+				ui.showStatus(MainWindow.STATUS_LOST);
 			}
 		});
 	}
 
-
 	@Override
-	public void currentPrice(int i, int j) {
-		// TODO Auto-generated method stub
-		
+	public void sniperBidding() {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				ui.showStatus(MainWindow.STATUS_BIDDING);
+			}
+		});
 	}
 }
