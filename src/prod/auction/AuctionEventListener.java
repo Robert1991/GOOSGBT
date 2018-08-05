@@ -1,4 +1,4 @@
-package prod.application;
+package prod.auction;
 
 public interface AuctionEventListener {
 

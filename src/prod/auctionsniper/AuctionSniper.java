@@ -1,7 +1,7 @@
 package prod.auctionsniper;
 
-import prod.application.AuctionEventListener;
 import prod.auction.Auction;
+import prod.auction.AuctionEventListener;
 
 public class AuctionSniper implements AuctionEventListener {
 

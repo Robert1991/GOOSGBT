@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import prod.application.AuctionEventListener;
-import prod.application.AuctionMessageTranslator;
+import prod.auction.AuctionEventListener;
+import prod.auction.AuctionMessageTranslator;
 
 public class AuctionMessageTranslatorTest {
 	public static final Chat UNUSED_CHAT = null;
