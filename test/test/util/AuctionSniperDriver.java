@@ -1,9 +1,12 @@
 package test.util;
 
-import static org.hamcrest.CoreMatchers.*;
+import static com.objogate.wl.swing.matcher.JLabelTextMatcher.withLabelText;
+import static com.objogate.wl.swing.matcher.IterableComponentsMatcher.matching;
+import static org.hamcrest.CoreMatchers.equalTo;
+
 import com.objogate.wl.swing.AWTEventQueueProber;
 import com.objogate.wl.swing.driver.JFrameDriver;
-import com.objogate.wl.swing.driver.JLabelDriver;
+import com.objogate.wl.swing.driver.JTableDriver;
 import com.objogate.wl.swing.gesture.GesturePerformer;
 
 import prod.application.ui.MainWindow;
@@ -18,8 +21,17 @@ public class AuctionSniperDriver extends JFrameDriver {
 
 	@SuppressWarnings("unchecked")
 	public void showsSniperStatus(String status) {
-		JLabelDriver jLabelDriver = new JLabelDriver(this, named(MainWindow.SNIPER_STATUS_NAME));
-		jLabelDriver.hasText(equalTo(status));
+		new JTableDriver(this).hasCell(withLabelText(equalTo(status)));
+	}
+
+	@SuppressWarnings("unchecked")
+	public void showsSniperStatus(String itemId, int lastPrice, int lastBid, String status) {
+		new JTableDriver(this).hasRow(matching(withLabelText(equalTo(itemId)), withLabelText(valueOf(lastPrice)),
+				withLabelText(valueOf(lastBid)),withLabelText(equalTo(status))));
+	}
+
+	private String valueOf(int intValue) {
+		return String.valueOf(intValue);
 	}
 
 }

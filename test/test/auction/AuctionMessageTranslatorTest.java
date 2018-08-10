@@ -11,9 +11,12 @@ import org.junit.Test;
 
 import prod.auction.AuctionEventListener;
 import prod.auction.AuctionMessageTranslator;
+import prod.auctionsniper.SniperListener.PriceSource;
 
 public class AuctionMessageTranslatorTest {
 	public static final Chat UNUSED_CHAT = null;
+
+	private static final String SNIPER_ID = "SomeSniper";
 	
 	@Rule
 	public final JUnitRuleMockery context = new JUnitRuleMockery();
@@ -25,7 +28,7 @@ public class AuctionMessageTranslatorTest {
 	
 	@Before
 	public void InitAuctionMessageTranslator() {
-		translator = new AuctionMessageTranslator(listener);
+		translator = new AuctionMessageTranslator(SNIPER_ID ,listener);
 	}
 	
 	@Test public void notifiesAuctionClosedWhenCloseMessageIsReceived() {
@@ -41,13 +44,14 @@ public class AuctionMessageTranslatorTest {
 	
 	@Test public void notifiesBidDetailsWhenCurrentPriceMessageReceived() {
 		context.checking(new Expectations(){{
-			exactly(1).of(listener).currentPrice(192, 7);
+			exactly(1).of(listener).currentPrice(192, 7, PriceSource.FromSniper);
 		}});
 		
 		Message message = new Message();
 		
 		message.setBody(
-				"SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;");
+				"SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: " 
+						+ SNIPER_ID + ";");
 		translator.processMessage(UNUSED_CHAT, message);
 	}
 	
