@@ -10,7 +10,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 
 import prod.application.ui.MainWindow;
-import prod.application.ui.SniperStateDisplayer;
+import prod.application.ui.SniperTableModel;
+import prod.application.ui.SwingThreadSniperListener;
 import prod.auction.Auction;
 import prod.auction.AuctionMessageTranslator;
 import prod.auction.XMPPAuction;
@@ -30,7 +31,9 @@ public class Main {
 
 	public static final String BID_COMMAND_FORMAT = "SOLVersion: 1.1; Command: Bid; Price: %d;";
 	public static final String JOIN_COMMAND_FORMAT = "SOLVersion: 1.1; Command: Join;";
-
+	
+	private final SniperTableModel snipers = new SniperTableModel();
+	
 	private MainWindow ui;
 
 	public Main() throws Exception {
@@ -48,10 +51,12 @@ public class Main {
 		Chat chat = connection.getChatManager().createChat(auctionId(itemId, connection), null);
 
 		Auction auction = new XMPPAuction(chat);
+		AuctionSniper auctionSniper = new AuctionSniper(new SwingThreadSniperListener(snipers), auction, itemId);
 		chat.addMessageListener(new AuctionMessageTranslator(connection.getUser(),
-				new AuctionSniper(new SniperStateDisplayer(ui), auction, itemId)));
+				auctionSniper));
 		this.notToBeGarbageCollected = chat;
 		auction.join();
+		auctionSniper.notifyJoined();
 	}
 
 	private void disconnectWhenUICloses(XMPPConnection connection) {
@@ -71,7 +76,7 @@ public class Main {
 	private void startUserInterface() throws Exception {
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
-				ui = new MainWindow();
+				ui = new MainWindow(snipers);
 			}
 		});
 	}

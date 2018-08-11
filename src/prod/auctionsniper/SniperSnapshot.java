@@ -1,7 +1,5 @@
 package prod.auctionsniper;
 
-import prod.auctionsniper.AuctionSniper.SniperState;
-
 public class SniperSnapshot {
 	public final String itemId;
 	public final int lastPrice;
@@ -40,10 +38,15 @@ public class SniperSnapshot {
 		return new SniperSnapshot(itemId, newLastPrice, lastBid, SniperState.BIDDING);
 	}
 	
+	public SniperSnapshot closed() {
+		return new SniperSnapshot(itemId, lastPrice, lastBid, state.whenAuctionClosed());
+	}
+	
 	@Override
 	public String toString() {
 		return String.format("ItemId: %s LastPrice: %d LastBid: %d SniperState: %s", 
 				itemId, lastPrice, lastBid,
 				state.toString());
 	}
+
 }

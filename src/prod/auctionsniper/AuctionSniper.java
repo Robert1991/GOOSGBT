@@ -5,15 +5,6 @@ import prod.auction.AuctionEventListener;
 import prod.auctionsniper.SniperListener.PriceSource;
 
 public class AuctionSniper implements AuctionEventListener {
-	public enum SniperState {
-		JOINING,
-		BIDDING,
-		WINNING,
-		LOST,
-		WON;
-	}
-	
-	private boolean isWinning = false;
 	private SniperListener sniperListener;
 	private Auction auction;
 	private SniperSnapshot snapshot;
@@ -21,33 +12,36 @@ public class AuctionSniper implements AuctionEventListener {
 	public AuctionSniper(SniperListener sniperListener, Auction auction, String itemId) {
 		this.sniperListener = sniperListener;
 		this.auction = auction;
-		this.snapshot = SniperSnapshot.joining(itemId); 
+		this.snapshot = SniperSnapshot.joining(itemId);
+	}
+	
+	public void notifyJoined() {
+		notifyChange();
 	}
 	
 	@Override
 	public void auctionClosed() {
-		if (isWinning) {
-			sniperListener.sniperWon();
-		} else {
-			sniperListener.sniperLost();
-		}
+		snapshot = snapshot.closed();
+		notifyChange();
 	}
 
 	@Override
 	public void currentPrice(int price, int increment, PriceSource source) {
-		isWinning = PriceSource.FromSniper == source;
-		
-		if (isWinning) {
+		switch(source) {
+		case FromSniper:
 			snapshot = snapshot.winning(price);
-		} else {			
+			break;
+		case FromOtherBidder:
 			int bid = price + increment;
 			auction.bid(bid);
 			snapshot = snapshot.bidding(price, bid);
+			break;
 		}
 		
-		sniperListener.sniperStateChanged(snapshot);
+		notifyChange();
 	}
 
-	
-
+	private void notifyChange() {
+		sniperListener.sniperStateChanged(snapshot);
+	}
 }

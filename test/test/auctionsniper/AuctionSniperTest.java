@@ -1,8 +1,9 @@
 package test.auctionsniper;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import static org.hamcrest.CoreMatchers.*;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.jmock.auto.Mock;
@@ -10,13 +11,13 @@ import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import static prod.auctionsniper.AuctionSniper.SniperState;
 
 import prod.auction.Auction;
 import prod.auctionsniper.AuctionSniper;
 import prod.auctionsniper.SniperListener;
 import prod.auctionsniper.SniperListener.PriceSource;
 import prod.auctionsniper.SniperSnapshot;
+import prod.auctionsniper.SniperState;
 
 public class AuctionSniperTest {
 	private final String ITEM_ID = "item-54321";
@@ -40,7 +41,8 @@ public class AuctionSniperTest {
 	
 	@Test public void reportsClosedWhenAuctionClosesImmediately() {
 		context.checking(new Expectations() {{
-			exactly(1).of(sniperListener).sniperLost();
+			exactly(1).of(sniperListener).
+				sniperStateChanged(with(aSniperThatIs(SniperState.LOST)));
 		}});
 		
 		auctionSniper.auctionClosed();
@@ -78,7 +80,8 @@ public class AuctionSniperTest {
 			ignoring(auction);
 			allowing(sniperListener).sniperStateChanged(with(aSniperThatIs(SniperState.BIDDING)));
 									then(sniperState.is("bidding"));
-			allowing(sniperListener).sniperLost();
+			atLeast(1).of(sniperListener).sniperStateChanged(
+					new SniperSnapshot(ITEM_ID, 123, 168, SniperState.LOST));
 									when(sniperState.is("bidding"));
 		}});
 		auctionSniper.currentPrice(123, 45, PriceSource.FromOtherBidder);
@@ -91,7 +94,8 @@ public class AuctionSniperTest {
 			allowing(sniperListener).sniperStateChanged(
 					with(aSniperThatIs(SniperState.WINNING)));
 									then(sniperState.is("winning"));
-			atLeast(1).of(sniperListener).sniperWon();
+			atLeast(1).of(sniperListener).sniperStateChanged(
+					with(aSniperThatIs(SniperState.WON)));
 									when(sniperState.is("winning"));
 		}});
 		auctionSniper.currentPrice(123, 45, PriceSource.FromSniper);

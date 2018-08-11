@@ -11,7 +11,7 @@ import prod.auctionsniper.SniperSnapshot;
 
 
 public class MainWindow extends JFrame {
-	private final SniperTableModel snipers = new SniperTableModel();
+	private final SniperTableModel snipers;
 	private static final long serialVersionUID = 1L;
 	
 	public static final String MAIN_WINDOW_NAME = "Auction Sniper";
@@ -23,16 +23,22 @@ public class MainWindow extends JFrame {
 	public static final String STATUS_BIDDING = "Bidding";
 	public static final String STATUS_WINNING = "Winning";
 	public static final String STATUS_WON = "Won";
+	public static final String APPLICATION_TITLE = "Auction Sniper";
 	
-	public MainWindow() {
+	public MainWindow(SniperTableModel snipers) {
 		super("Auction Sniper");
+		this.snipers = snipers;
+		setupUI();
+	}
+
+	private void setupUI() {
 		setName(MAIN_WINDOW_NAME);
 		fillContentPane(makeSnipersTable());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
 		setVisible(true);
 	}
-	
+
 	private void fillContentPane(JTable snipersTable) {
 		final Container contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
@@ -45,7 +51,7 @@ public class MainWindow extends JFrame {
 		return snipersTable;
 	}
 
-	public void sniperStatusChanged(SniperSnapshot sniperState) {
-		snipers.sniperStatusChanged(sniperState);
+	public void sniperStateChanged(SniperSnapshot sniperState) {
+		snipers.sniperStateChanged(sniperState);
 	}
 }

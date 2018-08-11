@@ -40,7 +40,7 @@ public class AuctionSniperEndToEndTest {
 		auction.hasReceivedJoinRequestFromSniper(ApplicationRunner.SNIPER_XMPP_ID);
 		
 		auction.reportPrice(1000, 98, "other bidder");
-		application.hasShownSniperIsBidding(1000, 1000); // last price; last bid;
+		application.hasShownSniperIsBidding(1000, 1098); // last price; last bid;
 		
 		auction.hasReceivedBid(1098, ApplicationRunner.SNIPER_XMPP_ID);
 		

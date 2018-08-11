@@ -16,11 +16,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import prod.application.ui.Column;
 import prod.application.ui.MainWindow;
 import prod.application.ui.SniperTableModel;
-import prod.application.ui.SniperTableModel.Column;
-import prod.auctionsniper.AuctionSniper.SniperState;
 import prod.auctionsniper.SniperSnapshot;
+import prod.auctionsniper.SniperState;
 
 public class SniperTableModelTest {
 	@Rule
@@ -47,7 +47,7 @@ public class SniperTableModelTest {
 			exactly(1).of(listener).tableChanged(with(aRowChangedEvent()));
 		}});
 		
-		model.sniperStatusChanged(new SniperSnapshot("item id", 555, 666, SniperState.BIDDING));
+		model.sniperStateChanged(new SniperSnapshot("item id", 555, 666, SniperState.BIDDING));
 		
 		assertColumnEquals(Column.ITEM_IDENTIFIER, "item id");
 		assertColumnEquals(Column.LAST_PRICE, 555);
@@ -55,6 +55,11 @@ public class SniperTableModelTest {
 		assertColumnEquals(Column.SNIPER_STATE, MainWindow.STATUS_BIDDING);
 	}
 	
+	@Test
+	public void setsUpAllColumns() {
+		for(Column col : Column.values())
+			assertEquals(col.name, model.getColumnName(col.ordinal()));
+	}
 	
 	private void assertColumnEquals(Column column, Object expected) {
 		final int rowIndex = 0;
