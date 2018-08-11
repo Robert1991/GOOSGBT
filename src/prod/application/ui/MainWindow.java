@@ -1,43 +1,57 @@
 package prod.application.ui;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.Container;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+import prod.auctionsniper.SniperSnapshot;
 
 
 public class MainWindow extends JFrame {
+	private final SniperTableModel snipers;
 	private static final long serialVersionUID = 1L;
 	
 	public static final String MAIN_WINDOW_NAME = "Auction Sniper";
 	public static final String SNIPER_STATUS_NAME = "sniper status";
+	private static final String SNIPERS_TABLE_NAME = "Snipers";	
 
 	public static final String STATUS_JOINING = "Joining";
 	public static final String STATUS_LOST = "Lost";
 	public static final String STATUS_BIDDING = "Bidding";
 	public static final String STATUS_WINNING = "Winning";
+	public static final String STATUS_WON = "Won";
+	public static final String APPLICATION_TITLE = "Auction Sniper";
 	
-	
-	private final JLabel sniperStatus = createLabel(STATUS_JOINING);
-	
-	public MainWindow() {
+	public MainWindow(SniperTableModel snipers) {
 		super("Auction Sniper");
+		this.snipers = snipers;
+		setupUI();
+	}
+
+	private void setupUI() {
 		setName(MAIN_WINDOW_NAME);
+		fillContentPane(makeSnipersTable());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		add(sniperStatus);
 		pack();
 		setVisible(true);
 	}
-	
-	public void showStatus(String status) {
-		sniperStatus.setText(status);
+
+	private void fillContentPane(JTable snipersTable) {
+		final Container contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
+		contentPane.add(new JScrollPane(snipersTable), BorderLayout.CENTER);
 	}
-	
-	private static JLabel createLabel(String initialText) {
-		JLabel result = new JLabel(initialText);
-		result.setName(SNIPER_STATUS_NAME);
-		result.setBorder(new LineBorder(Color.BLACK));
-		return result;
+
+	private JTable makeSnipersTable() {
+		final JTable snipersTable = new JTable(snipers);
+		snipersTable.setName(SNIPERS_TABLE_NAME);
+		return snipersTable;
+	}
+
+	public void sniperStateChanged(SniperSnapshot sniperState) {
+		snipers.sniperStateChanged(sniperState);
 	}
 }

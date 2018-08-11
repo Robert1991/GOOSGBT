@@ -3,9 +3,9 @@ package prod.auctionsniper;
 import java.util.EventListener;
 
 public interface SniperListener extends EventListener {
-	void sniperLost();
-
-	void sniperBidding();
+	enum PriceSource {
+		FromSniper, FromOtherBidder;
+	}
 	
-	void sniperWinning();
+	void sniperStateChanged(SniperSnapshot sniperState);
 }
